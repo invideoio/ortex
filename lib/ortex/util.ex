@@ -36,15 +36,15 @@ defmodule Ortex.Util do
     # so we're hacking a fix here
     onnx_runtime_filenames = Enum.map(onnx_runtime_paths, &Path.basename/1)
 
-    # case "libonnxruntime.so.1.17.0" in onnx_runtime_filenames do
-    #   true ->
-    #     nil
+    case "libonnxruntime.so.1.17.0" in onnx_runtime_filenames do
+      true ->
+        nil
 
-    #   false ->
-    #     File.cp!(
-    #       Path.join([destination_dir, "libonnxruntime.so"]),
-    #       Path.join([destination_dir, "libonnxruntime.so.1.17.0"])
-    #     )
-    # end
+      false ->
+        File.cp!(
+          Path.join([destination_dir, "libonnxruntime.so"]),
+          Path.join([destination_dir, "libonnxruntime.so.1.17.0"])
+        )
+    end
   end
 end
