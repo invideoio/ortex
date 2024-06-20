@@ -15,7 +15,8 @@ use tensor::OrtexTensor;
 use rustler::resource::ResourceArc;
 use rustler::types::Binary;
 use rustler::{Atom, Env, NifResult, Term};
-use ort::{CUDAExecutionProvider, ExecutionProvider, Session};
+use ort::{ExecutionProvider, SessionBuilder, environment};
+use std::sync::Arc;
 
 #[rustler::nif(schedule = "DirtyIo")]
 fn init(
@@ -108,20 +109,23 @@ pub fn concatenate<'a>(
 
 #[rustler::nif]
 pub fn is_cuda_available<'a>() -> NifResult<bool> {
-    let cuda = CUDAExecutionProvider::default();
-    match cuda.is_available() {
-        Ok(v) => Ok(v),
-        Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
-    }
+    let cuda = ExecutionProvider::cuda();
+    Ok(cuda.is_available())
 }
 
 #[rustler::nif]
 pub fn register_cuda<'a>() -> NifResult<String> {
-    match Session::builder() {
-        Ok(builder) => {
-            let cuda = CUDAExecutionProvider::default();
-            match cuda.register(&builder) {
-                Ok(_) => Ok("CUDA registered".to_string()),
+    match environment::Environment::builder()
+    .with_name("ortex-model")
+    .build() {
+        Ok(env) => {
+            match SessionBuilder::new(&Arc::new(env)) {
+                Ok(builder) => {
+                    match builder.with_execution_providers([ExecutionProvider::cuda()]) {
+                        Ok(_) => Ok("CUDA registered".to_string()),
+                        Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
+                    }
+                },
                 Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
             }
         },
