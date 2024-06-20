@@ -28,4 +28,7 @@ defmodule Ortex.Native do
   def reshape(_tensor, _shape), do: :erlang.nif_error(:nif_not_loaded)
 
   def concatenate(_tensors_refs, _type, _axis), do: :erlang.nif_error(:nif_not_loaded)
+
+  def is_cuda_available(), do: :erlang.nif_error(:nif_not_loaded)
+  def register_cuda(), do: :erlang.nif_error(:nif_not_loaded)
 end
