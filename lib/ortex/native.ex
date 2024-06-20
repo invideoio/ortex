@@ -33,6 +33,7 @@ defmodule Ortex.Native do
   def to_binary(_reference, _bits, _limit), do: :erlang.nif_error(:nif_not_loaded)
   def show_session(_model), do: :erlang.nif_error(:nif_not_loaded)
   def is_cuda_available(), do: :erlang.nif_error(:nif_not_loaded)
+  def register_cuda(), do: :erlang.nif_error(:nif_not_loaded)
 
   def slice(_tensor, _start_indicies, _lengths, _strides),
     do: :erlang.nif_error(:nif_not_loaded)

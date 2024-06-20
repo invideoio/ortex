@@ -15,7 +15,7 @@ use tensor::OrtexTensor;
 use rustler::resource::ResourceArc;
 use rustler::types::Binary;
 use rustler::{Atom, Env, NifResult, Term};
-use ort::{CUDAExecutionProvider, ExecutionProvider};
+use ort::{CUDAExecutionProvider, ExecutionProvider, Session};
 
 #[rustler::nif(schedule = "DirtyIo")]
 fn init(
@@ -115,6 +115,20 @@ pub fn is_cuda_available<'a>() -> NifResult<bool> {
     }
 }
 
+#[rustler::nif]
+pub fn register_cuda<'a>() -> NifResult<String> {
+    match Session::builder() {
+        Ok(builder) => {
+            let cuda = CUDAExecutionProvider::default();
+            match cuda.register(&builder) {
+                Ok(_) => Ok("CUDA registered".to_string()),
+                Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
+            }
+        },
+        Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
+    }
+}
+
 rustler::init!(
     "Elixir.Ortex.Native",
     [
@@ -124,6 +138,7 @@ rustler::init!(
         to_binary,
         show_session,
         is_cuda_available,
+        register_cuda,
         slice,
         reshape,
         concatenate
