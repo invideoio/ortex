@@ -114,7 +114,7 @@ pub fn is_cuda_available<'a>() -> NifResult<bool> {
 }
 
 #[rustler::nif]
-pub fn register_cuda<'a>() -> NifResult<String> {
+pub fn register_cuda<'a>(model_path: String) -> NifResult<String> {
     match environment::Environment::builder()
     .with_name("ortex-model")
     .build() {
@@ -122,7 +122,10 @@ pub fn register_cuda<'a>() -> NifResult<String> {
             match SessionBuilder::new(&Arc::new(env)) {
                 Ok(builder) => {
                     match builder.with_execution_providers([ExecutionProvider::cuda()]) {
-                        Ok(_) => Ok("CUDA registered".to_string()),
+                        Ok(builder) => match builder.with_model_from_file(model_path) {
+                            Ok(_) => Ok("CUDA registered".to_string()),
+                            Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
+                        }
                         Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
                     }
                 },
