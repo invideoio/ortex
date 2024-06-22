@@ -121,7 +121,7 @@ pub fn register_cuda<'a>() -> NifResult<String> {
         Ok(builder) => {
             let cuda = CUDAExecutionProvider::default();
             match cuda.register(&builder) {
-                Ok(_) => Ok("CUDA registered".to_string()),
+                Ok(_) => Ok("CUDA registered...".to_string()),
                 Err(err) => Err(rustler::Error::Term(Box::new(err.to_string())))
             }
         },
