@@ -29,4 +29,5 @@ ortex-*.tar
 .direnv/
 .nix-hex/
 .nix-mix/
+.nix-cargo/
 .elixir_ls
