@@ -29,6 +29,9 @@
           if builtins.getEnv "CI" != "true" then [
             pkgs.nixpkgs-fmt
             pkgs.fswatch
+            pkgs.gcc12
+            pkgs.clang
+            pkgs.cmake
             pkgs.rust-analyzer
             pkgs.awscli2
             pkgs.kubernetes-helm
