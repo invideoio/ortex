@@ -25,7 +25,7 @@ defmodule Ortex.Model do
   def load(path, eps \\ [:cpu], opt \\ 3) do
     case Ortex.Native.init(path, eps, opt) do
       {:error, msg} ->
-        raise msg
+        %Ortex.Model{reference: nil}
 
       model ->
         %Ortex.Model{reference: model}
