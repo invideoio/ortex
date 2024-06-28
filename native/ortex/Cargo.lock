@@ -425,7 +425,7 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 [[package]]
 name = "ort"
 version = "2.0.0-rc.2"
-source = "git+https://github.com/pykeio/ort.git?rev=860e449#860e4496ad99279aab3d5d2755a4d0984f28db76"
+source = "git+https://github.com/rajrajhans/ort?rev=c6e3bf2#c6e3bf205356b1a4b7f3abab8c0e573c96fcca12"
 dependencies = [
  "half",
  "js-sys",
@@ -439,7 +439,7 @@ dependencies = [
 [[package]]
 name = "ort-sys"
 version = "2.0.0-rc.2"
-source = "git+https://github.com/pykeio/ort.git?rev=860e449#860e4496ad99279aab3d5d2755a4d0984f28db76"
+source = "git+https://github.com/rajrajhans/ort?rev=c6e3bf2#c6e3bf205356b1a4b7f3abab8c0e573c96fcca12"
 dependencies = [
  "flate2",
  "pkg-config",
