@@ -123,6 +123,8 @@ pub fn map_opt_level(opt: i32) -> GraphOptimizationLevel {
 ///   ORT_CUDA_ARENA_EXTEND_STRATEGY  kSameAsRequested | kNextPowerOfTwo (ORT's default)
 ///   ORT_CUDA_CONV_ALGO_SEARCH       EXHAUSTIVE (ORT's default) | HEURISTIC | DEFAULT: cuDNN's conv algorithm choice,
 ///                                   which EXHAUSTIVE benchmarks per process (and so can pick differently per process)
+///   ORT_CUDA_CONV_USE_MAX_WORKSPACE 1 (ORT default: the workspace a conv may use is sized from free GPU memory) | 0
+///                                   (clamped to 32 MiB, so the choice can't depend on what else holds the GPU)
 fn cuda_ep() -> ExecutionProviderDispatch {
     let mut ep = ort::CUDAExecutionProvider::default();
     if let Some(limit) = std::env::var("ORT_CUDA_GPU_MEM_LIMIT").ok().and_then(|v| v.parse::<usize>().ok()) {
@@ -137,6 +139,11 @@ fn cuda_ep() -> ExecutionProviderDispatch {
         Ok("EXHAUSTIVE") => ep = ep.with_conv_algorithm_search(ort::CUDAExecutionProviderCuDNNConvAlgoSearch::Exhaustive),
         Ok("HEURISTIC") => ep = ep.with_conv_algorithm_search(ort::CUDAExecutionProviderCuDNNConvAlgoSearch::Heuristic),
         Ok("DEFAULT") => ep = ep.with_conv_algorithm_search(ort::CUDAExecutionProviderCuDNNConvAlgoSearch::Default),
+        _ => {}
+    }
+    match std::env::var("ORT_CUDA_CONV_USE_MAX_WORKSPACE").as_deref() {
+        Ok("0") => ep = ep.with_conv_max_workspace(false),
+        Ok("1") => ep = ep.with_conv_max_workspace(true),
         _ => {}
     }
     ep.build()
